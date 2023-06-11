@@ -1,0 +1,28 @@
+---
+
+- name: Install Redis packages
+  apt:
+    name: "{{ redis_packages }}"
+    state: present
+
+- name: Ensure Redis own his data directory
+  file:
+    path: "{{ redis_datadir }}"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+
+- name: Deploy /etc/redis/redis.conf
+  template:
+    src: redis.conf.j2
+    dest: "{{ redis_config }}"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: '0640'
+  notify: Restart Redis
+
+- name: Enable service Redis
+  service:
+    name: "{{ redis_service_name }}"
+    enabled: yes
+    state: started
+

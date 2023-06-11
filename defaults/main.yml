@@ -1,0 +1,10 @@
+---
+
+redis_service_name: "redis-server"
+redis_packages: [
+  redis-server
+  ]
+redis_datadir: "/var/lib/redis"
+redis_user: "redis"
+redis_group: "redis"
+redis_config: "/etc/redis/redis.conf"

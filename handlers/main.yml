@@ -1,0 +1,7 @@
+---
+
+- name: Restart Redis Service
+  service:
+    name: "{{ redis_service_name }}"
+    state: restarted
+  throttle: 1
