@@ -65,7 +65,8 @@
 # IF YOU ARE SURE YOU WANT YOUR INSTANCE TO LISTEN TO ALL THE INTERFACES
 # JUST COMMENT OUT THE FOLLOWING LINE.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-bind 127.0.0.1 ::1
+#bind 127.0.0.1 ::1
+bind {{ ansible_default_ipv4.address }}
 
 # Protected mode is a layer of security protection, in order to avoid that
 # Redis instances left open on the internet are accessed and exploited.
@@ -233,7 +234,7 @@ daemonize yes
 #                        UPSTART_JOB or NOTIFY_SOCKET environment variables
 # Note: these supervision methods only signal "process is ready."
 #       They do not enable continuous pings back to your supervisor.
-supervised no
+supervised systemd
 
 # If a pid file is specified, Redis writes it where specified at startup
 # and removes it at exit.
@@ -304,9 +305,9 @@ always-show-logo yes
 #
 #   save ""
 
-save 900 1
-save 300 10
-save 60 10000
+{% for save in redis_config_save %}
+save {{ save }}
+{% endfor %}
 
 # By default Redis will stop accepting writes if RDB snapshots are enabled
 # (at least one save point) and the latest background save failed.
@@ -1091,11 +1092,11 @@ oom-score-adj-values 0 200 800
 #
 # Please check http://redis.io/topics/persistence for more information.
 
-appendonly no
+appendonly {{ redis_config_appendonly }}
 
 # The name of the append only file (default: "appendonly.aof")
 
-appendfilename "appendonly.aof"
+appendfilename "{{ redis_config_appendfilename }}"
 
 # The fsync() call tells the Operating System to actually write data on disk
 # instead of waiting for more data in the output buffer. Some OS will really flush
@@ -1121,7 +1122,7 @@ appendfilename "appendonly.aof"
 # If unsure, use "everysec".
 
 # appendfsync always
-appendfsync everysec
+appendfsync {{ redis_config_appendfsync }}
 # appendfsync no
 
 # When the AOF fsync policy is set to always or everysec, and a background

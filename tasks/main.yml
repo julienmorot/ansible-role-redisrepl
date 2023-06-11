@@ -18,7 +18,7 @@
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
     mode: '0640'
-  notify: Restart Redis
+  notify: Restart Redis Service
 
 - name: Enable service Redis
   service:
