@@ -96,7 +96,7 @@ protected-mode yes
 
 # Accept connections on the specified port, default is 6379 (IANA #815344).
 # If port 0 is specified Redis will not listen on a TCP socket.
-port 6379
+port {{ redis_config_redis_port }}
 
 # TCP listen() backlog.
 #
@@ -395,6 +395,10 @@ dir /var/lib/redis
 #
 # replicaof <masterip> <masterport>
 
+{% if inventory_hostname in redis_config_slaves %}
+replicaof {{ redis_config_replicaof }} {{ redis_config_redis_port }}
+{% endif %}
+
 
 # If the master is password protected (using the "requirepass" configuration
 # directive below) it is possible to tell the replica to authenticate before
@@ -402,6 +406,7 @@ dir /var/lib/redis
 # refuse the replica request.
 #
 # masterauth <master-password>
+masterauth {{ redis_config_requirepass }}
 #
 # However this is not enough if you are using Redis ACLs (for Redis version
 # 6 or greater), and the default user is not capable of running the PSYNC
