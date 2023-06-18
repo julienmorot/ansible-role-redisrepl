@@ -1,7 +1,7 @@
 ---
 
 redis_service_name: "redis-server"
-redis_packages: [
+redis_server_packages: [
   redis-server
   ]
 redis_datadir: "/var/lib/redis"
@@ -18,3 +18,11 @@ redis_config_save:
   - "900 1"
   - "300 10"
   - "60 10000"
+
+redis_sentinel_packages: [
+  redis-sentinel
+  ]
+
+redis_config_sentinel_port: "26379"
+redis_sentinel_config: "/etc/redis/sentinel.conf"
+redis_sentinel_service_name: "redis-sentinel"

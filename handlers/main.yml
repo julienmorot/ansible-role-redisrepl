@@ -5,3 +5,9 @@
     name: "{{ redis_service_name }}"
     state: restarted
   throttle: 1
+
+- name: Restart Sentinel Service
+  service:
+    name: "{{ redis_sentinel_service_name }}"
+    state: restarted
+  throttle: 1

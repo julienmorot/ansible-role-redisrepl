@@ -1,8 +1,8 @@
 ---
 
 - name: Install Redis packages
-  apt:
-    name: "{{ redis_packages }}"
+  package:
+    name: "{{ redis_server_packages }}"
     state: present
 
 - name: Ensure Redis own his data directory
@@ -11,7 +11,7 @@
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
 
-- name: Deploy /etc/redis/redis.conf
+- name: Deploy "{{ redis_config }}"
   template:
     src: redis.conf.j2
     dest: "{{ redis_config }}"
@@ -26,3 +26,16 @@
     enabled: yes
     state: started
 
+- name: Install Redis Sentinel packages
+  package:
+    name: "{{ redis_sentinel_packages }}"
+    state: present
+
+- name: Deploy "{{ redis_sentinel_config }}"
+  template:
+    src: sentinel.conf.j2
+    dest: "{{ redis_sentinel_config }}"
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: '0640'
+  notify: Restart Sentinel Service
