@@ -26,3 +26,5 @@ redis_sentinel_packages: [
 redis_config_sentinel_port: "26379"
 redis_sentinel_config: "/etc/redis/sentinel.conf"
 redis_sentinel_service_name: "redis-sentinel"
+redis_sentinel_master_name: "mymaster"
+redis_sentinel_quorum: "2"

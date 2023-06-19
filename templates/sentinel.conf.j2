@@ -65,6 +65,8 @@ logfile "/var/log/redis/redis-sentinel.log"
 # unmounting filesystems.
 dir "/var/lib/redis"
 
+sentinel monitor {{ redis_sentinel_master_name }} {{ redis_config_replicaof }} {{ redis_config_redis_port }} {{ redis_sentinel_quorum }}
+
 # sentinel monitor <master-name> <ip> <redis-port> <quorum>
 #
 # Tells Sentinel to monitor this master, and to consider it in O_DOWN
@@ -82,7 +84,7 @@ dir "/var/lib/redis"
 #
 # Note: master name should not include special characters or spaces.
 # The valid charset is A-z 0-9 and the three characters ".-_".
-sentinel myid 06cb3a054c956c893c5cf2dbeb43493e1d12c5bd
+sentinel myid {{ inventory_hostname | hash('sha1') }}
 
 # sentinel auth-pass <master-name> <password>
 #
@@ -102,6 +104,7 @@ sentinel myid 06cb3a054c956c893c5cf2dbeb43493e1d12c5bd
 # Example:
 #
 # sentinel auth-pass mymaster MySUPER--secret-0123passw0rd
+sentinel auth-pass {{ redis_sentinel_master_name }} {{ redis_config_requirepass }}
 
 # sentinel auth-user <master-name> <username>
 #
@@ -132,6 +135,7 @@ sentinel deny-scripts-reconfig yes
 # other Sentinels. So you need to configure all your Sentinels in a given
 # group with the same "requirepass" password. Check the following documentation
 # for more info: https://redis.io/topics/sentinel
+requirepass {{ redis_config_requirepass }}
 
 # sentinel parallel-syncs <master-name> <numreplicas>
 #
@@ -139,7 +143,6 @@ sentinel deny-scripts-reconfig yes
 # during the failover. Use a low number if you use the replicas to serve query
 # to avoid that all the replicas will be unreachable at about the same
 # time while performing the synchronization with the master.
-sentinel monitor mymaster 127.0.0.1 6379 2
 
 # sentinel failover-timeout <master-name> <milliseconds>
 #
@@ -164,7 +167,7 @@ sentinel monitor mymaster 127.0.0.1 6379 2
 #   the exact parallel-syncs progression as specified.
 #
 # Default is 3 minutes.
-sentinel config-epoch mymaster 0
+sentinel config-epoch {{ redis_sentinel_master_name }} 0
 
 # SCRIPTS EXECUTION
 #
@@ -237,7 +240,7 @@ sentinel config-epoch mymaster 0
 # where clients can set the script to anything and trigger a failover in order
 # to get the program executed.
 
-sentinel leader-epoch mymaster 0
+sentinel leader-epoch {{ redis_sentinel_master_name }} 0
 
 # REDIS COMMANDS RENAMING
 #
@@ -268,3 +271,9 @@ protected-mode no
 supervised systemd
 user default on nopass ~* +@all
 sentinel current-epoch 0
+
+#sentinel down-after-milliseconds {{ redis_sentinel_master_name }} 60000
+#sentinel failover-timeout {{ redis_sentinel_master_name }} 180000
+sentinel down-after-milliseconds {{ redis_sentinel_master_name }} 6000
+sentinel failover-timeout {{ redis_sentinel_master_name }} 18000
+sentinel parallel-syncs {{ redis_sentinel_master_name }} 1
