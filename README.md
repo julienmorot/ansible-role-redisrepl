@@ -10,6 +10,11 @@ Ansible module to deploy a redis replication cluster
   become: yes
   remote_user: julien
   vars:
+    redis_config_requirepass: SECRET (put it on your vault!)
+    redis_config_slaves:
+      - db02.morot.local
+      - db03.morot.local
+    redis_config_replicaof: db01.morot.local
   roles:
       - ansible-role-redisrepl
 ```
