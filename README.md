@@ -34,6 +34,6 @@ Mandatory variables :
 | redis_config_slaves | list of servers from inventory used for replicaof configuration | none |
 | redis_config_replicaof | master server name | none |
 | redis_config_sentinelport | Define Redis Sentinel port | 26379 |
-| redis_sentinel_master_name | Define Redis Sentinel master name | redismaster |
+| redis_sentinel_master_name | Define Redis Sentinel master name | mymaster |
 | redis_sentinel_quorum | Minimum number of sentinel server that must agree for failover | 2 |
 
